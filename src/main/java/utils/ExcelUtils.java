@@ -42,21 +42,17 @@ public class ExcelUtils {
         for (int i = 0; i < itemElements.size(); i++) {
             WebElement item = itemElements.get(i);
             try {
-                System.out.println("\n--- Processing item " + (i + 1) + " ---");
-                System.out.println("Item outerHTML: " + item.getAttribute("outerHTML"));
 
                 // לחכות לכל אלמנט בנפרד
                 WebElement nameElement = wait.until(ExpectedConditions.visibilityOf(
                         item.findElement(By.cssSelector("[data-testid='item-description']"))
                 ));
                 String name = nameElement.getText().trim();
-                System.out.println("Name: " + name);
 
                 WebElement quantityElement = wait.until(ExpectedConditions.visibilityOf(
                         item.findElement(By.cssSelector("[data-testid='item-changeQuantity'] span"))
                 ));
                 String quantityText = quantityElement.getText().trim();
-                System.out.println("Quantity text: " + quantityText);
                 int quantity = Integer.parseInt(quantityText);
 
                 WebElement priceElement = wait.until(ExpectedConditions.visibilityOf(
@@ -88,51 +84,6 @@ public class ExcelUtils {
         return items;
     }
 
-    // פונקציה שמקבלת את ה-WebElements מהעגלה וממירה ל-CartItem
-//    public static List<CartItem> extractCartItems(List<WebElement> itemElements) {
-//        List<CartItem> items = new ArrayList<>();
-//
-//        for (WebElement item : itemElements) {
-//            try {
-//
-//                // שם
-//                String name = item.findElement(By.cssSelector(
-//                                "[data-testid='item-description']"))
-//                        .getText().trim();
-//
-//                // כמות
-//                String quantityText = item.findElement(
-//                                By.cssSelector("[data-testid='item-changeQuantity'] span"))
-//                        .getText().trim();
-//
-//                int quantity = Integer.parseInt(quantityText);
-//
-//                // מחיר
-//                String pricePerItemText = item.findElement(
-//                                By.cssSelector("div[data-component='PriceDetailed'] span"))
-//                        .getText().trim();
-//
-//                double pricePerItem = Double.parseDouble(
-//                        pricePerItemText.replace("$", "").replace(",", ""));
-//
-//                double total = pricePerItem * quantity;
-//
-//                items.add(new CartItem(
-//                        name,
-//                        quantity,
-//                        pricePerItemText,
-//                        "$" + String.format("%,.2f", total),
-//                        "PASS"
-//                ));
-//
-//            } catch (Exception e) {
-//                System.out.println("Warning: Could not read item details. Skipping...");
-//            }
-//        }
-//
-//        return items;
-//    }
-//
 
     // פונקציה לכתיבת האקסל
     public static void writeCartToExcel(List<CartItem> items, String filePath) {

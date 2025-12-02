@@ -104,10 +104,6 @@ public class ShoppingCartTest extends BaseTest {
         ProductPage productPage = new ProductPage(driver);
         ShoppingCartPage cartPage = new ShoppingCartPage(driver);
 
-        // --------------------------
-        // הוספת פריטים מעגלות שונות
-        // --------------------------
-
         // clothing
         categoryPage.selectCategoryByIndex(5);
         productPage.selectProduct();
@@ -126,15 +122,10 @@ public class ShoppingCartTest extends BaseTest {
         productPage.chooseSizeIfAvailable();
         productPage.addToCart();
 
-        // --------------------------
-        // מעבר לעגלה והגדלת כמות
-        // --------------------------
+
         cartPage.goToBag();
         cartPage.increaseQuantity();
 
-        // --------------------------
-        // בדיקות עגלה
-        // --------------------------
         int itemCount = cartPage.getItemsCount();
         System.out.println("Number of items in cart: " + itemCount);
         Assert.assertTrue(itemCount > 0, "Cart should have at least one item");
@@ -142,13 +133,9 @@ public class ShoppingCartTest extends BaseTest {
         String totalPriceText = cartPage.getTotalPrice();
         System.out.println("Total price displayed in cart: " + totalPriceText);
 
-        // חישוב סכום ידני של כל הפריטים
         List<WebElement> itemElements = driver.findElements(By.cssSelector("li[data-testid='item']"));
         List<ExcelUtils.CartItem> items = ExcelUtils.extractCartItems(itemElements, driver);
 
-        // --------------------------
-        // כתיבה לאקסל
-        // --------------------------
         ExcelUtils.writeCartToExcel(items, "cart_report.xlsx");
     }
 }

@@ -1,73 +1,83 @@
 package pages;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 
 public class FormPage extends BasePage {
-    public FormPage(WebDriver driver) { super(driver); }
+
+    public FormPage(WebDriver driver) {
+        super(driver);
+    }
 
     protected String BaseUrl = "https://tools.usps.com/zip-code-lookup.htm?byaddress";
 
-    // לשגיאת שדה חובה
-    public boolean isRequiredFieldErrorDisplayed() {
-        try {
-            WebElement el = driver.findElement(By.cssSelector("div.server-error.help-block"));
-            return el.isDisplayed();
-        } catch (NoSuchElementException e) {
-            return false;
-        }
-    }
-
-    // לשגיאת כתובת/עיר לא קיימת
-    public boolean isInvalidAddressErrorDisplayed() {
-        try {
-            WebElement el = driver.findElement(By.cssSelector("div.server-error.address-tCity.help-block"));
-            return el.isDisplayed();
-        } catch (NoSuchElementException e) {
-            return false;
-        }
-    }
-
+    // פתיחת הדף
     public void open() {
         driver.get(BaseUrl);
     }
 
+    // מילוי שדות עם שימוש בפונקציה type מהבייס
     public void companyName(String companyName) {
-        WebElement companyField = driver.findElement(By.cssSelector("#tCompany"));
-        companyField.sendKeys(companyName);
+        WebElement el = driver.findElement(By.cssSelector("#tCompany"));
+        type(el, companyName);
     }
 
     public void address(String address) {
-        WebElement addressField = driver.findElement(By.cssSelector("#tAddress"));
-        addressField.sendKeys(address);
+        WebElement el = driver.findElement(By.cssSelector("#tAddress"));
+        type(el, address);
     }
 
     public void apt(String apt) {
-        WebElement aptField = driver.findElement(By.cssSelector("#tApt"));
-        aptField.sendKeys(apt);
+        WebElement el = driver.findElement(By.cssSelector("#tApt"));
+        type(el, apt);
     }
 
     public void city(String city) {
-        WebElement cityField = driver.findElement(By.cssSelector("#tCity"));
-        cityField.sendKeys(city);
+        WebElement el = driver.findElement(By.cssSelector("#tCity"));
+        type(el, city);
     }
 
     public void state(String index) {
-        WebElement stateDropDown = driver.findElement(By.cssSelector("#tState"));
-        stateDropDown.click();
-        WebElement stateField = driver.findElement(By.cssSelector("#tState > option:nth-child(" + index + ")"));
-        stateField.click();
+        WebElement el = driver.findElement(By.cssSelector("#tState"));
+        click(el);
+        WebElement option = driver.findElement(By.cssSelector("#tState > option:nth-child(" + index + ")"));
+        click(option);
     }
 
     public void zipCode(String zipCode) {
-        WebElement zipCodeField = driver.findElement(By.cssSelector("#tZip-byaddress"));
-        zipCodeField.sendKeys(zipCode);
+        WebElement el = driver.findElement(By.cssSelector("#tZip-byaddress"));
+        type(el, zipCode);
     }
 
     public void findZipCode() {
-        WebElement findZipCode = driver.findElement(By.cssSelector("#zip-by-address"));
-        findZipCode.click();
+        WebElement el = driver.findElement(By.cssSelector("#zip-by-address"));
+        click(el);
     }
+
+    // בדיקת שגיאות עם wait מהבייס
+    public boolean isRequiredFieldErrorDisplayed() {
+        try {
+            WebElement el = wait.until(driver ->
+                    driver.findElement(By.cssSelector(
+                            "#zip-code-address-form > div > div > div > div:nth-child(6) > div.form-group.col-md-6.col-sm-6.col-xs-12.required-field.has-error.has-danger > div.help-block.with-errors"
+                    ))
+            );
+            return el.isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean isInvalidAddressErrorDisplayed() {
+        try {
+            WebElement el = wait.until(driver ->
+                    driver.findElement(By.cssSelector(
+                            "#zip-code-address-form > div > div > div > div:nth-child(7) > div:nth-child(1) > div.server-error.address-tCity.help-block"
+                    ))
+            );
+            return el.isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
 }
