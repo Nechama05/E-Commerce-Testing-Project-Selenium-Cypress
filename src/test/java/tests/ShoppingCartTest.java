@@ -105,19 +105,19 @@ public class ShoppingCartTest extends BaseTest {
         ShoppingCartPage cartPage = new ShoppingCartPage(driver);
 
         // clothing
-        categoryPage.selectCategoryByIndex(5);
+        categoryPage.selectCategoryByIndex(6);
         productPage.selectProduct();
         productPage.chooseSizeIfAvailable();
         productPage.addToCart();
 
         // bags
-        categoryPage.selectCategoryByIndex(7);
+        categoryPage.selectCategoryByIndex(8);
         productPage.selectProduct();
         productPage.chooseSizeIfAvailable();
         productPage.addToCart();
 
         // accessories
-        categoryPage.selectCategoryByIndex(8);
+        categoryPage.selectCategoryByIndex(9);
         productPage.selectProduct();
         productPage.chooseSizeIfAvailable();
         productPage.addToCart();
@@ -135,7 +135,20 @@ public class ShoppingCartTest extends BaseTest {
 
         List<WebElement> itemElements = driver.findElements(By.cssSelector("li[data-testid='item']"));
         List<ExcelUtils.CartItem> items = ExcelUtils.extractCartItems(itemElements, driver);
+        int totalQuantityCalculated = 0;
+        for (ExcelUtils.CartItem item : items) {
+            totalQuantityCalculated += item.quantity;
+        }
+        boolean quantitiesMatch = (itemCount == totalQuantityCalculated);
+        String status = quantitiesMatch ? "PASS" : "FAIL";
 
         ExcelUtils.writeCartToExcel(items, "cart_report.xlsx");
+        ExcelUtils.writeSummaryRow(
+                totalQuantityCalculated,
+                itemCount,
+                status,
+                "cart_quantity_check.xlsx"
+        );
+
     }
 }

@@ -66,6 +66,9 @@ public class FormPage extends BasePage {
             return false;
         }
     }
+    public String getZipCodeValue() {
+        return driver.findElement(By.cssSelector("#tZip-byaddress")).getAttribute("value");
+    }
 
     public boolean isInvalidAddressErrorDisplayed() {
         try {
@@ -80,4 +83,8 @@ public class FormPage extends BasePage {
         }
     }
 
+    public String getAddressValue() {
+        return driver.findElement(By.cssSelector("#tAddress")).getAttribute("value");
+
+    }
 }

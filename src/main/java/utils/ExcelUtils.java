@@ -84,6 +84,26 @@ public class ExcelUtils {
         return items;
     }
 
+    public static void writeSummaryRow(int expected, int actual, String status, String fileName) {
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Summary");
+
+        Row header = sheet.createRow(0);
+        header.createCell(0).setCellValue("Expected Total Quantity");
+        header.createCell(1).setCellValue("Actual Total Quantity");
+        header.createCell(2).setCellValue("Status");
+
+        Row row = sheet.createRow(1);
+        row.createCell(0).setCellValue(expected);
+        row.createCell(1).setCellValue(actual);
+        row.createCell(2).setCellValue(status);
+
+        try (FileOutputStream fos = new FileOutputStream(fileName)) {
+            workbook.write(fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     // פונקציה לכתיבת האקסל
     public static void writeCartToExcel(List<CartItem> items, String filePath) {

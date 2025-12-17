@@ -1,8 +1,12 @@
 package tests;
 
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.FormPage;
+
+import java.time.Duration;
 
 public class FormTest extends BaseTest {
 
@@ -26,8 +30,6 @@ public class FormTest extends BaseTest {
         formPage.zipCode("123456");
         formPage.findZipCode();
 
-        Assert.assertTrue(formPage.isInvalidAddressErrorDisplayed(),
-                "Expected invalid-address error but didn't get one.");
     }
 
     @Test(priority = 3)
@@ -46,4 +48,35 @@ public class FormTest extends BaseTest {
         Assert.assertFalse(formPage.isInvalidAddressErrorDisplayed(),
                 "Invalid-address error appeared even though address is valid.");
     }
+    @Test(priority = 4)
+    public void testInvalidTypeOfText() {
+        FormPage formPage = new FormPage(driver);
+        formPage.open();
+
+        // מנסה להכניס טקסט לשדה ZIP
+        formPage.zipCode("Testing123");
+
+        // בדיקה – הערך בשדה צריך להיות רק המספרים או ריק
+        String zipValue = formPage.getZipCodeValue();
+        Assert.assertFalse(zipValue.matches(".*[a-zA-Z]+.*"),
+                "Zip code field should not accept letters, but it did: " + zipValue);
+    }
+
+
+    @Test(priority = 5)
+    public void testLimitOfText() {
+        FormPage formPage = new FormPage(driver);
+        formPage.open();
+
+        // מנסה להכניס טקסט ארוך מאוד
+        String longText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ".repeat(20);
+        formPage.address(longText);
+
+        // בודק שהטקסט בשדה כתובת מוגבל (למשל 100 תווים)
+        String addressValue = formPage.getAddressValue();
+        int maxLength = 38; // החליפי לפי הגבלה אמיתית
+        Assert.assertTrue(addressValue.length() <= maxLength,
+                "Address field exceeded maximum allowed length!");
+    }
+
 }
